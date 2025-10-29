@@ -61,7 +61,7 @@ pipeline {
       steps {
         script {
           sh """
-            cd ${ennv.PRJ_NAME}
+            cd ${env.PRJ_NAME}
             echo "App ready"
           """
         }
