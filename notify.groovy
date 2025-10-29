@@ -9,7 +9,7 @@ def call(String prefix, String botToken, String chatId) {
         .replace('${prefix}', prefix)
         .replace('${jobName}', jobName)
         .replace('${buildStatus}', buildStatus)
-        .replace('buildUrl}', buildUrl)
+        .replace('${buildUrl}', buildUrl)
 
   sh """
     curl -s -X POST https://api.telegram.org/bot${botToken}/sendMessage \
