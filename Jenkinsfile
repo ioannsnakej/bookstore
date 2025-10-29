@@ -39,7 +39,7 @@ pipeline {
       steps {
         script {
           def notify = load 'notify.groovy'
-          notify("Start build", ${env.TG_BOT_TOKEN}, ${env.TG_CHAT_ID})
+          notify("Start build", env.TG_BOT_TOKEN, env.TG_CHAT_ID)
         }
 
         script {
@@ -73,14 +73,14 @@ pipeline {
     success {
       script {
         def notify = load 'notify.groovy'
-        notify("Success", ${TG_BOT_TOKEN}, ${TG_CHAT_ID})
+        notify("Success", env.TG_BOT_TOKEN, env.TG_CHAT_ID)
       }
     }
 
     failure {
       script {
         def notify = load 'notify.groovy'
-        notify("Failed", ${TG_BOT_TOKEN}, ${TG_CHAT_ID})
+        notify("Failed", env.TG_BOT_TOKEN, env.TG_CHAT_ID)
       }
     }
   }
