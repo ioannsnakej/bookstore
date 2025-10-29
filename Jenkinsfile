@@ -11,9 +11,12 @@ pipeline {
     PRJ_NAME="bookstore"
     GIT_URL="https://github.com/ioannsnakej/bookstore.git"
     TOKEN=credentials('docker_token')
+    TG_BOT_TOKEN=credentials('bot_token')
+    TG_CHAT_ID=credentials('chat_id')
   }
 
   stages {
+
     stage('Clone repo') {
       steps {
         script {
@@ -34,6 +37,11 @@ pipeline {
 
     stage('Build image') {
       steps {
+        script {
+          def notify = load 'notify.groovy'
+          notify("Start build", TG_BOT_TOKEN, TG_CHAT_ID)
+        }
+
         script {
           sh """
             cd ${env.PRJ_NAME}
@@ -60,5 +68,20 @@ pipeline {
       }
     }
   }
-    
+
+  post {
+    success {
+      script {
+        def notify = load 'notify.groovy'
+        notify("Success", TG_BOT_TOKEN, TG_CHAT_ID)
+      }
+    }
+
+    failure {
+      script {
+        def notify = load 'notife.groovy'
+        notify("Failed", TG_BOT_TOKEN, TG_CHAT_ID)
+      }
+    }
+  }
 }
