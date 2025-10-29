@@ -38,8 +38,12 @@ pipeline {
     stage('Build image') {
       steps {
         script {
-          def notify = load 'notify.groovy'
-          notify("Start build", env.TG_BOT_TOKEN, env.TG_CHAT_ID)
+           sh """
+              curl -s -X POST https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage \
+              -d chat_id=${env.TG_CHAT_ID} \
+              -d parse_mode=Markdown \
+              -d text="🏃Начата сборка проекта ${env.PRJ_NAME}"
+            """
         }
 
         script {
@@ -72,15 +76,23 @@ pipeline {
   post {
     success {
       script {
-        def notify = load 'notify.groovy'
-        notify("Success", env.TG_BOT_TOKEN, env.TG_CHAT_ID)
+        sh """
+          curl -s -X POST https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage \
+          -d chat_id=${env.TG_CHAT_ID} \
+          -d parse_mode=Markdown \
+          -d text="✅Success! Проект:${env.PRJ_NAME}"
+        """
       }
     }
 
     failure {
       script {
-        def notify = load 'notify.groovy'
-        notify("Failed", env.TG_BOT_TOKEN, env.TG_CHAT_ID)
+        sh """
+              curl -s -X POST https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage \
+              -d chat_id=${env.TG_CHAT_ID} \
+              -d parse_mode=Markdown \
+              -d text="❌Failed! Проект:${env.PRJ_NAME}"
+            """
       }
     }
   }
