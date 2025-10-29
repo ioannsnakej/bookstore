@@ -3,13 +3,7 @@ def call(String prefix, String botToken, String chatId) {
   def buildStatus = currentBuild.currentResult ?: "UNKNOWN"
   def buildUrl = env.BUILD_URL ?: "None"
 
-  def tmpl = readFile('notifyTmpl.md')
-
-  def msg = tmpl
-        .replace('${prefix}', prefix)
-        .replace('${jobName}', jobName)
-        .replace('${buildStatus}', buildStatus)
-        .replace('${buildUrl}', buildUrl)
+  def msg = "Build ${jobName} #${buildStatus} ${prefix} Job Link: ${buildUrl}"
 
   sh """
     curl -s -X POST https://api.telegram.org/bot${botToken}/sendMessage \
