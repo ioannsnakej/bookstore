@@ -1,7 +1,7 @@
 pipeline {
   agent any
   parameters {
-    booleanParam(name: 'RUN_TEST', defaultValue: 'true')
+    booleanParam(name: 'RUN_TESTS', defaultValue: 'true')
     string(name: 'TAG', defaultValue: 'latest')
     gitParameter(type: 'PT-BRANCH', name: 'REVISION', branchFilter: 'origin/(.*)', defaultValue: 'main', selectedValue: 'DEFAULT')
   }
