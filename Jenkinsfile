@@ -79,7 +79,7 @@ pipeline {
 
     failure {
       script {
-        def notify = load 'notife.groovy'
+        def notify = load 'notify.groovy'
         notify("Failed", TG_BOT_TOKEN, TG_CHAT_ID)
       }
     }
