@@ -9,7 +9,7 @@ pipeline {
 
   environment {
     DOCKER_REPO="ivankhodyrev/bookstore"
-    TG_TOKEN=credentials('docker_token')
+    DOCKER_TOKEN=credentials('docker_token')
     TG_BOT_TOKEN=credentials('bot_token')
     TG_CHAT_ID=credentials('chat_id')
   }
