@@ -1,98 +1,62 @@
+@Library('jenkins-shared-lib') _
+def GIT_URL = "git@github.com:ioannsnakej/bookstore.git"
+
 pipeline {
   agent {label 'docker'}
   parameters {
-    booleanParam(name: 'RUN_TESTS', defaultValue: 'true')
-    string(name: 'TAG', defaultValue: 'latest')
-    gitParameter(type: 'PT-BRANCH', name: 'REVISION', branchFilter: 'origin/(.*)', defaultValue: 'main', selectedValue: 'DEFAULT')
+    gitParameter(type: 'PT_BRANCH', name: 'GIT_BRANCH', branchFilter: 'origin/(.*)', defaultValue: 'main', selectedValue: 'DEFAULT', sortMode: 'DESCENDING_SMART')
   }
 
   environment {
-    GIT_NAME="ivankhodyrev"
-    PRJ_NAME="bookstore"
-    GIT_URL="https://github.com/ioannsnakej/bookstore.git"
-    TOKEN=credentials('docker_token')
+    DOCKER_REPO="ivankhodyrev/bookstore"
+    TG_TOKEN=credentials('docker_token')
     TG_BOT_TOKEN=credentials('bot_token')
     TG_CHAT_ID=credentials('chat_id')
   }
 
   stages {
 
-    stage('Clone repo') {
+    stage('Cheackout') {
+      steps {
+        git branch: "${params.GIT_BRANCH}", url: "${GIT_URL}
+      }
+    }
+
+    stage('Login to dockerhub') {
       steps {
         script {
-          sh """
-            if [ -d ${env.PRJ_NAME}/.git ]; then
-              echo "Repo exists. Updating..."
-              cd ${env.PRJ_NAME}
-              git checkout ${params.REVISION}
-              git pull
-            else
-              echo "Clone repo"
-              git clone ${env.GIT_URL}
-            fi
-          """
+          dockerBuild.login()
         }
       }
     }
 
-    stage('Build image') {
+    stage('Build docker image') {
       steps {
         script {
-           sh """
-              curl -s -X POST https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage \
-              -d chat_id=${env.TG_CHAT_ID} \
-              -d parse_mode=Markdown \
-              -d text="🏃Начата сборка проекта ${env.PRJ_NAME}"
-            """
-        }
-
-        script {
-          sh """
-            cd ${env.PRJ_NAME}
-            docker build -t ${env.GIT_NAME}/${env.PRJ_NAME}:${params.TAG} .
-            docker login -u ${env.GIT_NAME} -p ${env.TOKEN}
-            docker push ${env.GIT_NAME}/${env.PRJ_NAME}:${params.TAG}
-            docker logout
-          """
+          def FULL_TAG = "${env.DOCKER_REPO}:bookstore-${BUILD_ID}
+          dockerBuild.build(${FULL_TAG})
         }
       }
     }
 
-    stage('Run test') {
-      when {
-        expression { params.RUN_TESTS }
-      }
+    stage('Push image to dockerhub') {
       steps {
         script {
-          sh """
-            cd ${env.PRJ_NAME}
-            echo "App ready"
-          """
+          dockerBuild.push(${FULL_TAG})
         }
       }
     }
-  }
 
   post {
     success {
       script {
-        sh """
-          curl -s -X POST https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage \
-          -d chat_id=${env.TG_CHAT_ID} \
-          -d parse_mode=Markdown \
-          -d text="✅Success! Проект:${env.PRJ_NAME}"
-        """
+        notifyTelegram("✅ Success build", env.TG_BOT_TOKEN, env.TG_CHAT_ID)
       }
     }
 
     failure {
       script {
-        sh """
-              curl -s -X POST https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage \
-              -d chat_id=${env.TG_CHAT_ID} \
-              -d parse_mode=Markdown \
-              -d text="❌Failed! Проект:${env.PRJ_NAME}"
-            """
+        notifyTelegram("❌ Failed build!!!", env.TG_BOT_TOKEN, env.TG_CHAT_ID)
       }
     }
   }
