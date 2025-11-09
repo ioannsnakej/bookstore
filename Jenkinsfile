@@ -33,7 +33,7 @@ pipeline {
     stage('Build docker image') {
       steps {
         script {
-          def FULL_TAG = "${env.DOCKER_REPO}:bookstore-${BUILD_ID}
+          def FULL_TAG = "${env.DOCKER_REPO}:bookstore-${BUILD_ID}"
           dockerBuild.build(${FULL_TAG})
         }
       }
