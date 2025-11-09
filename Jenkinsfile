@@ -18,7 +18,7 @@ pipeline {
 
     stage('Cheackout') {
       steps {
-        git branch: "${params.GIT_BRANCH}", url: "${GIT_URL}
+        git branch: "${params.GIT_BRANCH}", url: "${GIT_URL}"
       }
     }
 
