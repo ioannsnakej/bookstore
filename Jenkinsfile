@@ -14,17 +14,8 @@ pipeline {
   }
 
   stages {
-    
-    stage('Debug creds') {
-      steps {
-        script {
-          echo "TG_BOT_TOKEN length: ${env.TG_BOT_TOKEN.length()}"
-          echo "TG_CHAT_ID: ${env.TG_CHAT_ID}"
-        }
-      }
-    }
 
-    stage('Cheackout') {
+    stage('Checkout') {
       steps {
         git branch: "${params.GIT_BRANCH}", url: "${GIT_URL}", credentialsId: 'github_ssh'
       }
