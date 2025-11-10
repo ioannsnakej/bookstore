@@ -33,7 +33,7 @@ pipeline {
       steps {
         script {
           def FULL_TAG = "${env.DOCKER_REPO}:bookstore-${BUILD_ID}"
-          dockerBuild.build(FULL_TAG)
+          dockerBuild.build('${FULL_TAG}')
         }
       }
     }
@@ -41,7 +41,7 @@ pipeline {
     stage('Push image to dockerhub') {
       steps {
         script {
-          dockerBuild.push(FULL_TAG)
+          dockerBuild.push('${FULL_TAG}')
         }
       }
     }
