@@ -14,6 +14,15 @@ pipeline {
   }
 
   stages {
+    
+    stage('Debug creds') {
+      steps {
+        script {
+          echo "TG_BOT_TOKEN lenght: ${env.TG_BOT_TOKEN.lenght()}"
+          echo "TG_CHAT_ID: ${env.TG_CHAT_ID}"
+        }
+      }
+    }
 
     stage('Cheackout') {
       steps {
