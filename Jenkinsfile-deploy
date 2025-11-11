@@ -9,7 +9,7 @@ pipeline {
   environment {
     HOST = "192.168.56.3"
     TOKEN = credentials('docker_creds')
-    RPJ_DIR = "/var/www/bookstore"
+    PRJ_DIR = "/var/www/bookstore"
     GIT_URL = "git@github.com:ioannsnakej/bookstore.git"
   }
 
@@ -25,8 +25,8 @@ pipeline {
       steps {
         withCredentials([sshUserPrivateKey(credentialsId: 'jenkins_ssh', usernameVariable: 'username', keyFileVariable: 'private_key')]) {
           script {
-            remote.name = ${env.HOST}
-            remote.host = ${env.HOST}
+            remote.name = env.HOST
+            remote.host = env.HOST
             remote.user = "${username}"
             remote.identity = readFile "${private_key}"
             remote.allowAnyHosts = true

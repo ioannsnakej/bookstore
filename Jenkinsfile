@@ -51,7 +51,7 @@ pipeline {
       }
       steps {
         script {
-          build quietPeriod: 5, wait: false, job: 'deploy-app', parameters: [string(name: 'DOCKER_IMAGE', value: "env.DOCKER_REPO")]
+          build quietPeriod: 5, wait: false, job: 'deploy-app', parameters: [string(name: 'DOCKER_IMAGE', value: "${env.DOCKER_REPO}")]
         }
       }
     }
