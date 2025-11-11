@@ -45,14 +45,6 @@ pipeline {
       }
     }
 
-    stage('Test build') {
-      steps {
-        script {
-
-        }
-      }
-    }
-
     stage('Call Deploy') {
       when {
         expression { return params.RUN_DEPLOY }
