@@ -6,7 +6,7 @@ pipeline {
     string (name: 'DOCKER_IMAGE', description: 'Image to deploy')
   }
 
-  enviroment {
+  environment {
     HOST = "192.168.56.3"
     TOKEN = credentials('docker_creds')
     RPJ_DIR = "/var/www/bookstore"
