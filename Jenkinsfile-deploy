@@ -1,0 +1,51 @@
+def remote = [:]
+
+pipeline {
+  agent { label 'target' }
+  parametes {
+    string (name: 'DOCKER_IMAGE', description: 'Image to deploy')
+  }
+
+  enviroment {
+    HOST = "192.168.56.3"
+    TOKEN = credentials('docker_creds')
+    RPJ_DIR = "/var/www/bookstore"
+    GIT_URL = "git@github.com:ioannsnakej/bookstore.git"
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        git branch: "main", url: "${GIT_URL}"
+      }
+    }
+
+    stage('Prepare Credentials') {
+      steps {
+        withCredentials([sshUserPrivateKey(credentials: 'jenkins_ssh', usernameVariable: 'username', keyFileVariable: 'private_key')]) {
+          script {
+            remote.name = ${env.HOST}
+            remote.host = ${env.HOST}
+            remote.user = "$(username)"
+            remote.identity = readFile "${private_key}"
+            remote.allowAnyHosts = true
+          }
+        }
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        script {
+          sshCommand remote: remote, command: """
+            set -x
+            docker pull "${params.DOCKER_IMAGE}"
+            cd "${env.PRJ_DIR}"
+            docker compose up -d
+          """
+        }
+      }
+    }
+  }
+}

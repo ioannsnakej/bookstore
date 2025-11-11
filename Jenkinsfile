@@ -44,6 +44,25 @@ pipeline {
         }
       }
     }
+
+    stage('Test build') {
+      steps {
+        script {
+
+        }
+      }
+    }
+
+    stage('Call Deploy') {
+      when {
+        expression { return params.RUN_DEPLOY }
+      }
+      steps {
+        script {
+          build quietPeriod: 5, wait: false, job: 'deploy-app', parameters: [string(name: 'DOCKER_IMAGE', value: "env.DOCKER_REPO")]
+        }
+      }
+    }
   }
 
   post {
