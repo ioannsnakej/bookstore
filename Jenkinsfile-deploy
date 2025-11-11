@@ -17,7 +17,7 @@ pipeline {
 
     stage('Checkout') {
       steps {
-        git branch: "main", url: "${GIT_URL}"
+        git branch: "main", url: "${GIT_URL}", credentialsId: 'github_ssh'
       }
     }
 
