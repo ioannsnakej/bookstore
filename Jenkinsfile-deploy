@@ -2,7 +2,7 @@ def remote = [:]
 
 pipeline {
   agent { label 'target' }
-  parametes {
+  parameters {
     string (name: 'DOCKER_IMAGE', description: 'Image to deploy')
   }
 
