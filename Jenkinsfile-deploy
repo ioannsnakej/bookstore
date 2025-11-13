@@ -34,7 +34,8 @@ pipeline {
     stage('Add .env and compose.yml') {
       steps {
         script {
-          sh """
+          sh '''
+            cp -r * ${PRJ_DIR}/
             cd ${PRJ_DIR}
             rm -f .env
             echo "DB_USER=${env.DB_USER}" > .env
@@ -44,7 +45,7 @@ pipeline {
             
             export DOCKER_IMAGE=${params.DOCKER_IMAGE}
             envsubst < compose.tmpl > compose.yml
-          """
+          '''
         }
       }
     }
