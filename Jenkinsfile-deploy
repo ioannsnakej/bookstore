@@ -38,10 +38,10 @@ pipeline {
             cp -r * ${PRJ_DIR}/
             cd ${PRJ_DIR}
             rm -f .env
-            echo "DB_USER=${env.DB_USER}" > .env
-            echo "DB_NAME=${env.DB_NAME}" > .env
-            echo "DB_HOST=${env.DB_HOST}" > .env
-            echo "DB_PASS=${env.DB_PASS}" > .env
+            export DB_USER=${env.DB_USER}
+            export DB_NAME=${env.DB_NAME}
+            export DB_HOST=${env.DB_HOST}
+            export DB_PASS=${env.DB_PASS}
             
             export DOCKER_IMAGE=${params.DOCKER_IMAGE}
             envsubst < compose.tmpl > compose.yml
