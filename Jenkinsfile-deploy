@@ -74,6 +74,7 @@ pipeline {
             docker compose down || true
             docker compose up -d
             docker compose ps
+            cat ./nginx/bookstore.conf
             docker compose logs web || true
           """
         }
