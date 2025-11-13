@@ -6,7 +6,7 @@ pipeline {
   agent { label 'target' }
   
   parameters {
-    string (name: 'DOCKER_IMAGE', description: 'Image to deploy')
+    string (name: 'DOCKER_IMAGE', description: 'Image to deploy', defaultValue: 'ivankhodyrev/bookstore:latest')
   }
 
   environment {
@@ -20,6 +20,7 @@ pipeline {
     DB_NAME = credentials('db_name')
     DB_HOST = credentials('db_host')
     DB_PASS = credentials('db_pass')
+    TAG = "latest"
   }
 
   stages {
@@ -35,8 +36,8 @@ pipeline {
         script {
           sh """
             cd ${PRJ_DIR}
-           rm -f .env
-           echo "DB_USER=${env.DB_USER}" > .env
+            rm -f .env
+            echo "DB_USER=${env.DB_USER}" > .env
             echo "DB_NAME=${env.DB_NAME}" > .env
             echo "DB_HOST=${env.DB_HOST}" > .env
             echo "DB_PASS=${env.DB_PASS}" > .env
