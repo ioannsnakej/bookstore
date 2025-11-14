@@ -40,7 +40,8 @@ pipeline {
             DB_PASS=${DB_PASS}
           """
           sh """
-            cp compose.tmpl nginx/ ${PRJ_DIR}
+            cp compose.tmpl ${PRJ_DIR}
+            cp nginx/ ${PRJ_DIR}
             cd ${PRJ_DIR}
             export DOCKER_IMAGE=${params.DOCKER_IMAGE}
             envsubst < compose.tmpl > compose.yml
