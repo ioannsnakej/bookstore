@@ -41,7 +41,7 @@ pipeline {
           """
           sh """
             cp compose.tmpl ${PRJ_DIR}
-            cp nginx/ ${PRJ_DIR}
+            cp -r nginx/ ${PRJ_DIR}
             cd ${PRJ_DIR}
             export DOCKER_IMAGE=${params.DOCKER_IMAGE}
             envsubst < compose.tmpl > compose.yml
