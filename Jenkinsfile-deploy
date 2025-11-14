@@ -33,7 +33,9 @@ pipeline {
     stage('Add .env and compose.yml') {
       steps {
         script {
-            mkdir -p ${PRJ_DIR}
+            ssh """
+              mkdir -p ${PRJ_DIR}
+            """
             writeFile file: "${PRJ_DIR}/.env", text: """
             DB_USER=${DB_USER}
             DB_NAME=${DB_NAME}
