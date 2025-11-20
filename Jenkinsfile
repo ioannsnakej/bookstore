@@ -55,7 +55,7 @@ pipeline {
             docker rm test-container
           """
         }
-      |
+      }
     }
 
     stage('Push image to dockerhub') {
