@@ -5,6 +5,7 @@ pipeline {
   agent {label 'docker'}
   parameters {
     gitParameter(type: 'PT_BRANCH', name: 'GIT_BRANCH', branchFilter: 'origin/(.*)', defaultValue: 'main', selectedValue: 'DEFAULT', sortMode: 'DESCENDING_SMART')
+    booleanParam(name: 'RUN_DEPLOY', defaultValue: 'true')
   }
 
   environment {
