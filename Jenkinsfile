@@ -52,7 +52,7 @@ pipeline {
           """
 
           sh """
-            docker compose up d 
+            docker compose up -d 
             sleep 30
             curl -f localhost:80/books
           """
