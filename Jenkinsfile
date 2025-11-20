@@ -11,6 +11,10 @@ pipeline {
     DOCKER_REPO="ivankhodyrev/bookstore"
     TG_BOT_TOKEN=credentials('bot_token')
     TG_CHAT_ID=credentials('chat_id')
+    DB_USER = credentials('db_user')
+    DB_NAME = credentials('db_name')
+    DB_HOST = credentials('db_host')
+    DB_PASS = credentials('db_pass')
   }
 
   stages {
@@ -37,25 +41,6 @@ pipeline {
       }
     }
 
-     stage('Add .env and compose.yml') {
-      steps {
-        script {
-            writeFile file: "./.env", text: """
-            DB_USER=${DB_USER}
-            DB_NAME=${DB_NAME}
-            DB_HOST=${DB_HOST}
-            DB_PASS=${DB_PASS}
-          """
-          sh """
-            cp compose.tmpl ${PRJ_DIR}
-            cp -r nginx/ ${PRJ_DIR}
-            cd ${PRJ_DIR}
-            export DOCKER_IMAGE=${params.DOCKER_IMAGE}
-            envsubst < compose.tmpl > compose.yml
-          """
-        }
-      }
-    }
     stage('Test image') {
       steps {
         script {
