@@ -37,25 +37,47 @@ pipeline {
       }
     }
 
+     stage('Add .env and compose.yml') {
+      steps {
+        script {
+            writeFile file: "./.env", text: """
+            DB_USER=${DB_USER}
+            DB_NAME=${DB_NAME}
+            DB_HOST=${DB_HOST}
+            DB_PASS=${DB_PASS}
+          """
+          sh """
+            cp compose.tmpl ${PRJ_DIR}
+            cp -r nginx/ ${PRJ_DIR}
+            cd ${PRJ_DIR}
+            export DOCKER_IMAGE=${params.DOCKER_IMAGE}
+            envsubst < compose.tmpl > compose.yml
+          """
+        }
+      }
+    }
     stage('Test image') {
       steps {
         script {
+          writeFile file: "./.env", text: """
+            DB_USER=${DB_USER}
+            DB_NAME=${DB_NAME}
+            DB_HOST=${DB_HOST}
+            DB_PASS=${DB_PASS}
+          """
+
           sh """
-            docker run -d -p 8080:8080 --name test-container ${env.DOCKER_REPO}
+            docker compose test up d 
             sleep 30
-            docker ps
-            docker logs test-container
-            docker ps -a | grep test-container
-            set -e
-            curl localhost:8080/books
+            curl -f localhost:80/books
           """
         }
       }
       post {
         always {
           sh """
-            docker stop test-container
-            docker rm test-container
+            docker compose down -v
+            rm -f test
           """
         }
       }
