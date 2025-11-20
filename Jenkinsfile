@@ -41,7 +41,7 @@ pipeline {
       steps {
         script {
           sh """
-            docker run -d -p 8080:8080 --name test-container "$(env.DOCKER_REPO)"
+            docker run -d -p 8080:8080 --name test-container $(env.DOCKER_REPO)
             sleep 10
             set -e
             curl localhost:8080/books
