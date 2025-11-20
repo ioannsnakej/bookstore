@@ -37,6 +37,27 @@ pipeline {
       }
     }
 
+    stage('Test image') {
+      steps {
+        script {
+          sh """
+            docker run -d -p 8080:8080 --name test-container "$(env.DOCKER_REPO)"
+            sleep 10
+            set -e
+            curl localhost:8080/books
+          """
+        }
+      }
+      post {
+        always {
+          sh """
+            docker stop test-container
+            docker rm test-container
+          """
+        }
+      |
+    }
+
     stage('Push image to dockerhub') {
       steps {
         script {
