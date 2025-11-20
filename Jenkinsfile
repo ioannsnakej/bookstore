@@ -52,7 +52,7 @@ pipeline {
           """
 
           sh """
-            docker compose test up d 
+            docker compose up d 
             sleep 30
             curl -f localhost:80/books
           """
@@ -62,7 +62,6 @@ pipeline {
         always {
           sh """
             docker compose down -v
-            rm -f test
           """
         }
       }
