@@ -42,7 +42,10 @@ pipeline {
         script {
           sh """
             docker run -d -p 8080:8080 --name test-container ${env.DOCKER_REPO}
-            sleep 10
+            sleep 30
+            docker ps
+            docker logs test-container
+            docker ps -a | grep test-container
             set -e
             curl localhost:8080/books
           """
